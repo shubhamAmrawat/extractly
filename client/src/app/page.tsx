@@ -155,7 +155,7 @@ export default function Home() {
                   <div
                     key={tool.id}
                     onClick={() => handleToolClick(tool)}
-                    className="group cursor-pointer rounded-[5px] border border-neutral-200/80 bg-white p-4 hover:border-neutral-350 dark:border-neutral-850 dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex flex-col items-start text-left"
+                    className="group cursor-pointer rounded-[5px] border-1  border-neutral-200/80 bg-white p-4 hover:border-neutral-350 dark:border-neutral-200/50  dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex flex-col items-start text-left"
                   >
                     <div className="flex h-8 w-8 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-white dark:group-hover:text-neutral-950 transition-colors">
                       <IconComponent className="h-4 w-4" />

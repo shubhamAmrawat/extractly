@@ -232,7 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
                 >
                   <div className="flex items-center gap-2">
                     <CategoryIcon className={`h-3.5 w-3.5 ${getCategoryColor(category)}`} />
-                    <span>{category}</span>
+                    <span className="text-neutral-800 dark:text-neutral-200">{category}</span>
                   </div>
                   <ChevronRight className={`h-3 w-3 text-neutral-500 dark:text-neutral-400 transition-transform ${
                     isExpanded ? "rotate-90" : ""

@@ -103,16 +103,6 @@ export const TOOLS: Tool[] = [
     path: "/tools/image-resizer",
     status: "stable"
   },
-  {
-    id: "image-compressor",
-    name: "Image Compressor",
-    description: "Reduce image file size with adjustable quality and live preview.",
-    category: "Image Tools",
-    iconName: "FolderArchive",
-    path: "/tools/image-compressor",
-    popular: true,
-    status: "stable"
-  },
 
   // Video Tools
   {
