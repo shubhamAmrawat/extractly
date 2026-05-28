@@ -162,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
             className={navItemClass("/")}
             title="Dashboard"
           >
-            <LayoutDashboard className="h-3.5 w-3.5 text-white-600 dark:text-neutral-300" />
+            <LayoutDashboard className="h-3.5 w-3.5 text-white-600 dark:text-black-300" />
             {!isSidebarCollapsed && <span>Dashboard</span>}
           </Link>
         </div>
