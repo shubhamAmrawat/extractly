@@ -96,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
       isSidebarCollapsed ? "justify-center h-8 w-8 mx-auto" : "px-3 py-1.5 gap-2.5 w-full"
     } ${
       isActive
-        ? "bg-neutral-900 text-white dark:bg-neutral-50 dark:text-neutral-950 font-bold"
+        ? "bg-neutral-900 text-white dark:bg-neutral-800 dark:text-neutral-50 font-bold"
         : "text-neutral-600 hover:bg-neutral-105 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
     }`;
   };

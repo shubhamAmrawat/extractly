@@ -19,10 +19,36 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const router = useRouter();
-  const { recentTools, searchQuery, setSearchQuery, addRecentTool } = useApp();
+  const { recentTools, searchQuery, setSearchQuery, addRecentTool, pendingUploadFile, setPendingUploadFile } = useApp();
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  // Filter tools based on search and selected category
+  const getMatchingToolsForFile = (fileName: string): string[] => {
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
+    if (extension === "pdf") {
+      return ["pdf-merge", "pdf-split", "pdf-to-text"];
+    }
+    if (["png", "jpg", "jpeg", "webp", "gif"].includes(extension)) {
+      return ["image-converter", "image-resizer"];
+    }
+    if (["mp4", "mov", "avi", "mkv", "webm"].includes(extension)) {
+      return ["video-compressor", "audio-extractor"];
+    }
+    if (["mp3", "wav", "m4a", "ogg"].includes(extension)) {
+      return ["audio-extractor"];
+    }
+    if (["json"].includes(extension)) {
+      return ["json-formatter"];
+    }
+    if (["md"].includes(extension)) {
+      return ["markdown-previewer"];
+    }
+    if (["svg"].includes(extension)) {
+      return ["svg-optimizer"];
+    }
+    return [];
+  };
+
+  // Filter tools based on search, selected category, and pending file type
   const filteredTools = TOOLS.filter((tool) => {
     const matchesSearch = 
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -32,7 +58,13 @@ export default function Home() {
     const matchesCategory = 
       activeCategory === "All" || tool.category === activeCategory;
 
-    return matchesSearch && matchesCategory;
+    let matchesPendingFile = true;
+    if (pendingUploadFile) {
+      const allowedIds = getMatchingToolsForFile(pendingUploadFile.name);
+      matchesPendingFile = allowedIds.includes(tool.id);
+    }
+
+    return matchesSearch && matchesCategory && matchesPendingFile;
   });
 
   const trendingTools = TOOLS.filter((t) => t.trending);
@@ -45,34 +77,7 @@ export default function Home() {
   // Smart Universal Drop Handler
   const handleUniversalFileSelect = (files: File[]) => {
     if (files.length === 0) return;
-    const file = files[0];
-    const extension = file.name.split(".").pop()?.toLowerCase();
-
-    // Auto-routing map
-    let targetToolId = "";
-    if (extension === "pdf") {
-      targetToolId = "pdf-merge";
-    } else if (["png", "jpg", "jpeg", "webp", "gif"].includes(extension || "")) {
-      targetToolId = "image-converter";
-    } else if (["mp4", "mov", "avi", "mkv", "webm"].includes(extension || "")) {
-      targetToolId = "audio-extractor";
-    } else if (extension === "json") {
-      targetToolId = "json-formatter";
-    } else if (extension === "md") {
-      targetToolId = "markdown-previewer";
-    }
-
-    if (targetToolId) {
-      const foundTool = TOOLS.find((t) => t.id === targetToolId);
-      if (foundTool) {
-        addRecentTool(foundTool.id);
-        router.push(`${foundTool.path}?auto=true`);
-        return;
-      }
-    }
-
-    // Default fallback if we can't auto-detect
-    alert(`We detected "${file.name}" (.${extension}). Use the Search Bar to select the best matching utility for this file type.`);
+    setPendingUploadFile(files[0]);
   };
 
   return (
@@ -101,48 +106,67 @@ export default function Home() {
             maxSizeMB={100}
             multiple={true}
             descriptionText="Drop any PDF, Image, Video, or JSON file here to launch matching tool"
+            hasSnakeBorder={true}
           />
         </section>
 
-        {/* Feature Highlights Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-              <ShieldCheck className="h-4.5 w-4.5" />
-            </div>
-            <div>
-              <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">100% Secure & Private</h3>
-              <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
-                Files are processed strictly in-browser. Zero servers, zero uploads, zero data logs.
+        {/* Pending File Ingestion Focus Banner */}
+        {pendingUploadFile && (
+          <section className="max-w-2xl mx-auto rounded-[5px] bg-violet-500/10 border border-violet-500/20 px-4 py-3 flex items-center justify-between animate-fade-in shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-violet-500 animate-pulse" />
+              <p className="text-[11px] font-medium text-neutral-800 dark:text-neutral-200">
+                Active File: <span className="font-bold text-violet-600 dark:text-violet-300">{pendingUploadFile.name}</span>. Click on a matching utility below to load this file automatically.
               </p>
             </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-650 dark:bg-indigo-500/20 dark:text-indigo-400">
-              <Zap className="h-4.5 w-4.5" />
-            </div>
-            <div>
-              <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">Sub-second Execution</h3>
-              <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
-                Skip file upload and download lag. Convert, resize, and split instantly.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-650 dark:bg-violet-500/20 dark:text-violet-400">
-              <Sparkles className="h-4.5 w-4.5" />
-            </div>
-            <div>
-              <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">Creator Ready</h3>
-              <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
-                Subtitles generators, screen and voice recorders, metadata checkers at your service.
-              </p>
-            </div>
-          </div>
-        </section>
+            <button
+              onClick={() => setPendingUploadFile(null)}
+              className="text-[10px] font-bold text-neutral-500 hover:text-neutral-800 dark:text-neutral-450 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+            >
+              Clear File
+            </button>
+          </section>
+        )}
 
-        {/* Dynamic Recents Section */}
-        {recentTools.length > 0 && (
+        {/* Feature Highlights Grid */}
+        {!pendingUploadFile && (
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                <ShieldCheck className="h-4.5 w-4.5" />
+              </div>
+              <div>
+                <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">100% Secure & Private</h3>
+                <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
+                  Files are processed strictly in-browser. Zero servers, zero uploads, zero data logs.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-650 dark:bg-indigo-500/20 dark:text-indigo-400">
+                <Zap className="h-4.5 w-4.5" />
+              </div>
+              <div>
+                <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">Sub-second Execution</h3>
+                <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
+                  Skip file upload and download lag. Convert, resize, and split instantly.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-white/50 dark:bg-neutral-900/20 dark:border-neutral-900/60 p-4">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-650 dark:bg-violet-500/20 dark:text-violet-400">
+                <Sparkles className="h-4.5 w-4.5" />
+              </div>
+              <div>
+                <h3 className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">Creator Ready</h3>
+                <p className="text-[10px] text-neutral-600 dark:text-neutral-300 mt-1 leading-normal">
+                  Subtitles generators, screen and voice recorders, metadata checkers at your service.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}        {/* Dynamic Recents Section */}
+        {recentTools.length > 0 && !pendingUploadFile && (
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
               <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
@@ -155,15 +179,15 @@ export default function Home() {
                   <div
                     key={tool.id}
                     onClick={() => handleToolClick(tool)}
-                    className="group cursor-pointer rounded-[5px] border-1  border-neutral-200/80 bg-white p-4 hover:border-neutral-350 dark:border-neutral-200/50  dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex flex-col items-start text-left"
+                    className="group cursor-pointer rounded-[5px] border border-neutral-200/80 bg-white p-4 hover:border-neutral-350 dark:border-neutral-850 dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex flex-col items-start text-left"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-white dark:group-hover:text-neutral-950 transition-colors">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-neutral-800 dark:group-hover:text-neutral-100 dark:group-hover:border-neutral-700 transition-colors">
                       <IconComponent className="h-4 w-4" />
                     </div>
                     <h3 className="mt-3 text-xs font-semibold text-neutral-900 dark:text-neutral-100">
                       {tool.name}
                     </h3>
-                    <p className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-350 line-clamp-2 leading-relaxed font-medium">
+                    <p className="mt-1 text-[10px] text-neutral-550 dark:text-neutral-350 line-clamp-2 leading-relaxed font-medium">
                       {tool.description}
                     </p>
                   </div>
@@ -174,43 +198,45 @@ export default function Home() {
         )}
 
         {/* Trending row */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
-              <Flame className="h-4 w-4 text-orange-500" />
-              <h2 className="text-xs font-bold uppercase tracking-wider">Trending Utilities</h2>
+        {!pendingUploadFile && (
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
+                <Flame className="h-4 w-4 text-orange-500" />
+                <h2 className="text-xs font-bold uppercase tracking-wider">Trending Utilities</h2>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {trendingTools.slice(0, 3).map((tool) => {
-              const IconComponent = getIcon(tool.iconName);
-              return (
-                <div
-                  key={tool.id}
-                  onClick={() => handleToolClick(tool)}
-                  className="group cursor-pointer rounded-[5px] border border-neutral-200/80 bg-white p-5 hover:border-neutral-350 dark:border-neutral-850 dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex items-start gap-4 text-left"
-                >
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-550 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-white dark:group-hover:text-neutral-950 transition-colors">
-                    <IconComponent className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">
-                        {tool.name}
-                      </h3>
-                      <span className="text-[7px] font-bold text-orange-500 bg-orange-500/10 px-1 py-0.2 rounded uppercase">
-                        HOT
-                      </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {trendingTools.slice(0, 3).map((tool) => {
+                const IconComponent = getIcon(tool.iconName);
+                return (
+                  <div
+                    key={tool.id}
+                    onClick={() => handleToolClick(tool)}
+                    className="group cursor-pointer rounded-[5px] border border-neutral-200/80 bg-white p-5 hover:border-neutral-350 dark:border-neutral-850 dark:bg-neutral-900/40 dark:hover:border-neutral-750 transition-all flex items-start gap-4 text-left"
+                  >
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-neutral-800 dark:group-hover:text-neutral-100 dark:group-hover:border-neutral-700 transition-colors">
+                      <IconComponent className="h-5 w-5" />
                     </div>
-                    <p className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-350 leading-normal font-medium">
-                      {tool.description}
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">
+                          {tool.name}
+                        </h3>
+                        <span className="text-[7px] font-bold text-orange-500 bg-orange-500/10 px-1 py-0.2 rounded uppercase">
+                          HOT
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-350 leading-normal font-medium">
+                        {tool.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Directory Explorer */}
         <section className="space-y-6 pt-4 border-t border-neutral-200/80 dark:border-neutral-900">
@@ -244,7 +270,7 @@ export default function Home() {
                 onClick={() => setActiveCategory(category)}
                 className={`rounded-full px-3.5 py-1 text-[10px] font-bold transition-all ${
                   activeCategory === category
-                    ? "bg-neutral-950 text-white dark:bg-white dark:text-black"
+                    ? "bg-neutral-950 text-white dark:bg-neutral-800 dark:text-neutral-50"
                     : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-850 dark:text-neutral-350 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-200"
                 }`}
               >
@@ -272,7 +298,7 @@ export default function Home() {
                     >
                       <div>
                         <div className="flex items-center justify-between">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-white dark:group-hover:text-neutral-950 transition-all">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-[5px] border border-neutral-100 bg-neutral-50 text-neutral-500 group-hover:bg-neutral-900 group-hover:text-white dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-400 dark:group-hover:bg-neutral-800 dark:group-hover:text-neutral-100 dark:group-hover:border-neutral-700 transition-all">
                             <IconComponent className="h-4.5 w-4.5" />
                           </div>
                           

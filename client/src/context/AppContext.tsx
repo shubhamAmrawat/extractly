@@ -23,6 +23,8 @@ interface AppContextType {
   isLoggedIn: boolean;
   setIsLoggedIn: (loggedIn: boolean) => void;
   user: UserType | null;
+  pendingUploadFile: File | null;
+  setPendingUploadFile: (file: File | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -35,6 +37,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
+  const [pendingUploadFile, setPendingUploadFile] = useState<File | null>(null);
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -149,6 +152,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isLoggedIn,
         setIsLoggedIn: handleSetIsLoggedIn,
         user,
+        pendingUploadFile,
+        setPendingUploadFile,
       }}
     >
       {children}

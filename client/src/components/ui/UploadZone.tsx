@@ -10,6 +10,7 @@ interface UploadZoneProps {
   multiple?: boolean;
   maxSizeMB?: number;
   descriptionText?: string;
+  hasSnakeBorder?: boolean;
 }
 
 export const UploadZone: React.FC<UploadZoneProps> = ({
@@ -18,6 +19,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
   multiple = false,
   maxSizeMB = 50,
   descriptionText = "drag & drop files here, or click to browse",
+  hasSnakeBorder = false,
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,49 +119,100 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
   return (
     <div className="w-full">
-      <motion.div
-        onDragEnter={handleDrag}
-        onDragOver={handleDrag}
-        onDragLeave={handleDrag}
-        onDrop={handleDrop}
-        onClick={triggerInput}
-        whileHover={{ scale: 1.005 }}
-        whileTap={{ scale: 0.995 }}
-        className={`group relative flex flex-col items-center justify-center rounded-xl border border-dashed p-10 text-center cursor-pointer transition-all min-h-[220px] ${
-          isDragActive
-            ? "border-neutral-800 bg-neutral-100/50 dark:border-neutral-200 dark:bg-neutral-800/20"
-            : "border-neutral-200 bg-white hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900/30 dark:hover:border-neutral-700"
-        }`}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          className="hidden"
-        />
+      {hasSnakeBorder ? (
+        <div className="relative p-[1.5px] overflow-hidden rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-sm group">
+          {/* Rotating glowing border (snake animation) */}
+          <div className="absolute -inset-[150%] bg-[conic-gradient(from_0deg,transparent_40%,#8b5cf6_50%,transparent_60%)] dark:bg-[conic-gradient(from_0deg,transparent_40%,#a78bfa_50%,transparent_60%)] animate-[spin_5s_linear_infinite] pointer-events-none" />
+          
+          <motion.div
+            onDragEnter={handleDrag}
+            onDragOver={handleDrag}
+            onDragLeave={handleDrag}
+            onDrop={handleDrop}
+            onClick={triggerInput}
+            whileHover={{ scale: 1.002 }}
+            whileTap={{ scale: 0.998 }}
+            className={`relative flex flex-col items-center justify-center rounded-[11px] p-10 text-center cursor-pointer transition-all min-h-[220px] ${
+              isDragActive
+                ? "bg-neutral-100/50 dark:bg-neutral-800"
+                : "bg-white dark:bg-neutral-900"
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={accept}
+              multiple={multiple}
+              onChange={handleChange}
+              className="hidden"
+            />
 
-        {/* Upload Icon with animated micro-bounce */}
-        <div className={`flex h-12 w-12 items-center justify-center rounded-lg border transition-all ${
-          isDragActive 
-            ? "border-neutral-400 bg-neutral-200 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-50"
-            : "border-neutral-100 bg-neutral-50 text-neutral-400 group-hover:bg-neutral-100 group-hover:text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-500 dark:group-hover:bg-neutral-800/80 dark:group-hover:text-neutral-300"
-        }`}>
-          <UploadCloud className={`h-6 w-6 transition-transform ${isDragActive ? "scale-110" : "group-hover:-translate-y-0.5"}`} />
+            {/* Upload Icon with animated micro-bounce */}
+            <div className={`flex h-12 w-12 items-center justify-center rounded-lg border transition-all ${
+              isDragActive 
+                ? "border-neutral-400 bg-neutral-200 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-50"
+                : "border-neutral-100 bg-neutral-50 text-neutral-400 group-hover:bg-neutral-100 group-hover:text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-500 dark:group-hover:bg-neutral-800/80 dark:group-hover:text-neutral-350"
+            }`}>
+              <UploadCloud className={`h-6 w-6 transition-transform ${isDragActive ? "scale-110" : "group-hover:-translate-y-0.5"}`} />
+            </div>
+
+            <span className="mt-4 text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+              Upload files
+            </span>
+            <span className="mt-1 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
+              {descriptionText}
+            </span>
+
+            <span className="mt-3 text-[9px] text-neutral-400/80 dark:text-neutral-500/80 uppercase tracking-wider font-bold">
+              Max File Size: {maxSizeMB}MB
+            </span>
+          </motion.div>
         </div>
+      ) : (
+        <motion.div
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDragLeave={handleDrag}
+          onDrop={handleDrop}
+          onClick={triggerInput}
+          whileHover={{ scale: 1.005 }}
+          whileTap={{ scale: 0.995 }}
+          className={`group relative flex flex-col items-center justify-center rounded-xl border border-dashed p-10 text-center cursor-pointer transition-all min-h-[220px] ${
+            isDragActive
+              ? "border-neutral-800 bg-neutral-100/50 dark:border-neutral-200 dark:bg-neutral-800/20"
+              : "border-neutral-200 bg-white hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900/30 dark:hover:border-neutral-700"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={accept}
+            multiple={multiple}
+            onChange={handleChange}
+            className="hidden"
+          />
 
-        <span className="mt-4 text-xs font-semibold text-neutral-800 dark:text-neutral-200">
-          Upload files
-        </span>
-        <span className="mt-1 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
-          {descriptionText}
-        </span>
+          {/* Upload Icon with animated micro-bounce */}
+          <div className={`flex h-12 w-12 items-center justify-center rounded-lg border transition-all ${
+            isDragActive 
+              ? "border-neutral-400 bg-neutral-200 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-50"
+              : "border-neutral-100 bg-neutral-50 text-neutral-400 group-hover:bg-neutral-100 group-hover:text-neutral-600 dark:border-neutral-800 dark:bg-neutral-800/40 dark:text-neutral-500 dark:group-hover:bg-neutral-800/80 dark:group-hover:text-neutral-355"
+          }`}>
+            <UploadCloud className={`h-6 w-6 transition-transform ${isDragActive ? "scale-110" : "group-hover:-translate-y-0.5"}`} />
+          </div>
 
-        <span className="mt-3 text-[9px] text-neutral-400/80 dark:text-neutral-500/80 uppercase tracking-wider font-bold">
-          Max File Size: {maxSizeMB}MB
-        </span>
-      </motion.div>
+          <span className="mt-4 text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+            Upload files
+          </span>
+          <span className="mt-1 text-[10px] text-neutral-400 dark:text-neutral-500 font-medium">
+            {descriptionText}
+          </span>
+
+          <span className="mt-3 text-[9px] text-neutral-400/80 dark:text-neutral-500/80 uppercase tracking-wider font-bold">
+            Max File Size: {maxSizeMB}MB
+          </span>
+        </motion.div>
+      )}
 
       {/* Error state */}
       {error && (

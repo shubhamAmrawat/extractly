@@ -34,6 +34,17 @@
 
   --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
+
+  /* Custom theme colors for mapping non-standard neutral scales cleanly */
+  --color-neutral-150: #f1f1f4;
+  --color-neutral-355: #cbcbcf;
+  --color-neutral-450: #a1a1aa;
+  --color-neutral-455: #737373;
+  --color-neutral-555: #525252;
+  --color-neutral-750: #2a2a2e;
+  --color-neutral-805: #212124;
+  --color-neutral-850: #18181c;
+  --color-neutral-855: #141417;
 }
 
 :root {
@@ -61,24 +72,24 @@
 
 /* We support class-based dark mode as well as automatic dark mode for fallback */
 .dark, :root[class~="dark"] {
-  --background: 240 10% 4%;
+  --background: 240 10% 5.5%;
   --foreground: 0 0% 98%;
-  --card: 240 10% 5.5%;
+  --card: 240 10% 8.5%;
   --card-foreground: 0 0% 98%;
-  --popover: 240 10% 5.5%;
+  --popover: 240 10% 8.5%;
   --popover-foreground: 0 0% 98%;
   --primary: 0 0% 98%;
-  --primary-foreground: 240 10% 4%;
-  --secondary: 240 3.7% 12%;
+  --primary-foreground: 240 10% 5.5%;
+  --secondary: 240 3.7% 14%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 12%;
+  --muted: 240 3.7% 14%;
   --muted-foreground: 240 5% 65%;
-  --accent: 240 3.7% 12%;
+  --accent: 240 3.7% 14%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 12%;
-  --input: 240 3.7% 12%;
+  --border: 240 3.7% 14%;
+  --input: 240 3.7% 14%;
   --ring: 240 4.9% 83.9%;
 }
 

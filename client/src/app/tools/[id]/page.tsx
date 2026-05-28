@@ -36,7 +36,7 @@ export default function ToolPage() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { addRecentTool } = useApp();
+  const { addRecentTool, pendingUploadFile, setPendingUploadFile } = useApp();
   
   const toolId = params.id as string;
   const tool = TOOLS.find((t) => t.id === toolId);
@@ -332,6 +332,43 @@ export default function ToolPage() {
     
     setFlowState("configuring");
   };
+
+  // Auto-ingest pending file from universal dashboard upload
+  useEffect(() => {
+    if (pendingUploadFile && toolId) {
+      const getMatchingToolsForFile = (fileName: string): string[] => {
+        const extension = fileName.split(".").pop()?.toLowerCase() || "";
+        if (extension === "pdf") {
+          return ["pdf-merge", "pdf-split", "pdf-to-text"];
+        }
+        if (["png", "jpg", "jpeg", "webp", "gif"].includes(extension)) {
+          return ["image-converter", "image-resizer"];
+        }
+        if (["mp4", "mov", "avi", "mkv", "webm"].includes(extension)) {
+          return ["video-compressor", "audio-extractor"];
+        }
+        if (["mp3", "wav", "m4a", "ogg"].includes(extension)) {
+          return ["audio-extractor"];
+        }
+        if (["json"].includes(extension)) {
+          return ["json-formatter"];
+        }
+        if (["md"].includes(extension)) {
+          return ["markdown-previewer"];
+        }
+        if (["svg"].includes(extension)) {
+          return ["svg-optimizer"];
+        }
+        return [];
+      };
+
+      const isMatching = getMatchingToolsForFile(pendingUploadFile.name).includes(toolId);
+      if (isMatching) {
+        handleFilesSelected([pendingUploadFile]);
+      }
+      setPendingUploadFile(null); // Clear once consumed
+    }
+  }, [pendingUploadFile, toolId]);
 
   // Add more files to PDF merge
   const handleAddMergeFiles = async (files: File[]) => {
