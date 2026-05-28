@@ -292,13 +292,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
               >
                 {user?.name.split(" ").map(n => n[0]).join("")}
               </Link>
-              <button
+              {/* <button
                 onClick={() => setIsLoggedIn(false)}
                 className="rounded-lg p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-red-500 dark:hover:bg-neutral-900 transition-colors"
                 title="Sign Out"
               >
                 <LogOut className="h-3.5 w-3.5" />
-              </button>
+              </button> */}
             </div>
           ) : (
             <div className="flex items-center justify-between bg-neutral-100/50 p-2.5 rounded-xl border border-neutral-200/50 dark:bg-neutral-900/40 dark:border-neutral-800/80">
@@ -312,13 +312,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
                 </div>
               </Link>
               <div className="flex gap-0.5">
-                <button
+                {/* <button
                   onClick={() => router.push("/profile")}
                   className="rounded-lg p-1 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-200 transition-colors"
                   title="Profile Settings"
                 >
                   <Settings className="h-3.5 w-3.5" />
-                </button>
+                </button> */}
                 <button
                   onClick={() => setIsLoggedIn(false)}
                   className="rounded-lg p-1 text-neutral-500 hover:bg-neutral-200 hover:text-red-550 dark:hover:bg-neutral-800 transition-colors"
@@ -337,14 +337,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
               className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-500 hover:border-neutral-350 hover:text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 mx-auto"
               title="Sign In / Register"
             >
-              <LogIn className="h-4 w-4" />
+              <User className="h-4 w-4" />
             </button>
           ) : (
             <button
               onClick={() => router.push("/auth")}
               className="flex items-center justify-center gap-1.5 w-full rounded-lg bg-neutral-950 border border-neutral-850 px-3 py-2 text-xs font-bold text-white hover:bg-neutral-900 dark:bg-white dark:text-black dark:border-neutral-200 dark:hover:bg-neutral-100 transition-colors shadow-sm"
             >
-              <LogIn className="h-3.5 w-3.5" />
+              <User className="h-3.5 w-3.5" />
               <span>Login / Signup</span>
             </button>
           )
