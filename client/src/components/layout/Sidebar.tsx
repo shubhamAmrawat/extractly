@@ -90,8 +90,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
     }));
   };
 
-  const navItemClass = (path: string) => {
-    const isActive = pathname === path;
+  const navItemClass = (path: string, ignoreActive: boolean = false) => {
+    const isActive = !ignoreActive && pathname === path;
     return `flex items-center rounded-lg text-[11px] font-semibold transition-all ${
       isSidebarCollapsed ? "justify-center h-8 w-8 mx-auto" : "px-3 py-1.5 gap-2.5 w-full"
     } ${
@@ -185,7 +185,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
                   key={tool.id}
                   href={tool.path}
                   onClick={() => setMobileOpen(false)}
-                  className={navItemClass(tool.path)}
+                  className={navItemClass(tool.path, true)}
                   title={tool.name}
                 >
                   <Icon className={`h-3.5 w-3.5 ${getCategoryColor(tool.category)}`} />

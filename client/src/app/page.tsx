@@ -80,10 +80,10 @@ export default function Home() {
       <div className="space-y-12">
         {/* Hero Section */}
         <section className="text-center max-w-2xl mx-auto space-y-4 pt-4">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200/50 dark:border-neutral-800/80 px-3 py-1 text-[10px] font-bold text-neutral-600 dark:text-neutral-300">
+          {/* <div className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200/50 dark:border-neutral-800/80 px-3 py-1 text-[10px] font-bold text-neutral-600 dark:text-neutral-300">
             <Sparkles className="h-3 w-3 text-violet-500" />
             <span>AI-Powered & Local browser utility suite</span>
-          </div>
+          </div> */}
 
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-neutral-950 dark:text-white leading-[1.15]">
             One modern platform for all digital utility needs.
