@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Extractly | Premium All-in-One Digital Utility Suite",
   description: "Merge PDFs, convert images, record screen, extract audio, compress assets, and use AI utilities inside a sleek, fast, privacy-focused browser dashboard.",
+  icons: {
+    icon: "/logo_Favicon.png",
+  },
 };
 
 export default function RootLayout({
