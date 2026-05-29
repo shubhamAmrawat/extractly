@@ -37,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setMobileOpen }) => {
         <nav className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
           <button
             onClick={() => router.push("/")}
-            className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors"
+            className="flex items-center gap-1 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors cursor-pointer"
           >
             <Home className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Home</span>
@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setMobileOpen }) => {
         {/* Command Palette Trigger */}
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-900 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-900 transition-colors cursor-pointer"
           title="Search utilities (Cmd+K)"
         >
           <Search className="h-4 w-4" />
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setMobileOpen }) => {
         {pathname !== "/" && (
           <button
             onClick={handleBack}
-            className="flex h-8 items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-2.5 text-[10px] font-semibold hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-300"
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-2.5 text-[10px] font-semibold hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-300 cursor-pointer"
           >
             <ArrowLeft className="h-3 w-3" />
             <span>Dashboard</span>
@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setMobileOpen }) => {
         {/* Platform Wide Theme Switch */}
         <button
           onClick={toggleTheme}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-150 hover:text-neutral-700 dark:hover:bg-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-205 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-150 hover:text-neutral-700 dark:hover:bg-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-205 transition-colors cursor-pointer"
           title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
         >
           {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
